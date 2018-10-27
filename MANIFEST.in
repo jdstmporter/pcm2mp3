@@ -1,0 +1,5 @@
+include *.rst
+recursive-include utils *.py
+recursive-include cpp *.hpp *.cpp
+recursive-include tests *.py *.wav *.mp3
+

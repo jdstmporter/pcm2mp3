@@ -38,7 +38,7 @@ typedef struct {
 
  class MP3Manager {
   public:
-	 static const std::map<std::string,pylame::mp3::ID3Versions> ID3Modes;
+
 
  	 MP3Manager() {};
 

@@ -23,33 +23,45 @@ static PyObject *mp3Error;
 const char* ModuleName="pcm2mp3";
 const char* ErrorName="MP3Error";
 
-static const char *keywords[] = {"","bitrate","quality",NULL};
 
 static PyObject * mp3stream(PyObject *self, PyObject *args, PyObject *keywds) {
-	unsigned bitRate = 64;
-	unsigned quality = 5;
-	Py_buffer buffer;
 
-	try {
-		if(!PyArg_ParseTupleAndKeywords(args,keywds,"y*|$II",(char **)keywords,&buffer,&bitRate,&quality)) {
-			throw PException(PyExc_TypeError,"API is transcode(stream,bitrate=64,quality=5)");
+	if(!PyTuple_Check(args))  {
+			PyErr_SetString(PyExc_OSError,"Arguments are not a tuple");
+			return nullptr;
 		}
+		auto n=PyTuple_Size(args);
+		if(n==0) {
+			PyErr_SetString(PyExc_OSError,"Too few positional arguments (wants one or two)");
+			return nullptr;
+		}
+		if(n>2) {
+			PyErr_SetString(PyExc_OSError,"Too many positional arguments (wants one or two)");
+			return nullptr;
+		}
+		auto o1=PyTuple_GetItem(args,0);
+		if(!PyObject_CheckBuffer(o1)) {
+			PyErr_SetString(mp3Error,"Initial argument must be a buffer");
+			return nullptr;
+		}
+		Py_buffer *buffer=(Py_buffer *)o1;
+		PyID3 *id=(n==2) ? (PyID3 *)PyTuple_GetItem(args,1) : nullptr;
+
 		try {
-			char *orig=(char *)buffer.buf;
-			pylame::data_t data(orig,orig+buffer.len);
-			pylame::Transcode transcode(data,quality,bitRate);
+			char *orig=(char *)buffer->buf;
+			pylame::data_t data(orig,orig+buffer->len);
+			id3_t id3=(id!=nullptr) ? id->id3 : std::make_shared<pylame::id3::ID3Header>();
+			pylame::Transcode transcode(data,*id3);
 			//std::cerr << "Transcode call completed: making output";
 			auto out = Py_BuildValue("y#",transcode.ptr(),transcode.size());
-			PyBuffer_Release(&buffer);
+			PyBuffer_Release(buffer);
 			return out;
 		}
 		catch(std::exception &e) {
-			throw PException(mp3Error,e.what());
+			PyErr_SetString(mp3Error,e.what());
+			return nullptr;
 		}
-	}
-	catch(PException &p) {
-		return p();
-	}
+
 }
 
 static PyObject * mp3check(PyObject *self, PyObject *args, PyObject *keywds) {

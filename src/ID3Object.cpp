@@ -13,6 +13,8 @@
 #define debug(ARGS) ()
 #endif
 
+using namespace pylame;
+
 PyObject *ID3_new(PyTypeObject *type,PyObject *args,PyObject *keywords) {
 	auto self = (PyID3 *)type->tp_alloc(type, 0);
 	if (self != NULL) {
@@ -193,6 +195,8 @@ static PyTypeObject PyID3_Type = {
 		0,                         			/* tp_alloc */
 		(newfunc)ID3_new,                 		/* tp_new */
 };
+
+bool check_ID3(PyObject *o) { return o->ob_type==&PyID3_Type; }
 
 static const std::map<id3::ID3Version,std::string> id3versions = {
 		{ id3::ID3Version::ID3v1 , "ID3v1" },

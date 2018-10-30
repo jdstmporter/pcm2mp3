@@ -22,12 +22,14 @@ if __name__ == '__main__':
         print(f"Couldn't remove test.mp3: {e}")
         
     try:
-        
+        id3=pcm2mp3.ID3(pcm2mp3.ID3.ID3v2)
+        id3[pcm2mp3.ID3.COPYRIGHT]='All hail Lore Lixenberg!'
+        id3[pcm2mp3.ID3.TITLE]='The test of tests'
         if TRANSCODE:
             print('Using transcode')
             with open('test.wav','rb') as infile:
                 print('Starting transcoding')
-                out=pcm2mp3.transcode(infile.read(),quality=5,bitrate=16)
+                out=pcm2mp3.transcode(infile.read(),id3)
                 print('Transcoding completed')
                 with open('test.mp3','wb') as outfile:
                     outfile.write(out)
@@ -35,7 +37,7 @@ if __name__ == '__main__':
             print('Using MP3 Object')
             with open('test.wav','rb') as infile:
                 pcm=pcm2mp3.PCM(infile.read())
-                mp3=pcm2mp3.MP3(pcm,quality=5,rate=16)
+                mp3=pcm2mp3.MP3(pcm,id3)
                 with open('test.mp3','wb') as outfile:
                     outfile.write(mp3.data())
         print('Successful conversion')

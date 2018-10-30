@@ -1,5 +1,6 @@
 include *.rst
 recursive-include utils *.py
-recursive-include cpp *.hpp *.cpp
+recursive-include src *.hpp *.cpp
+recursive-include pcm2mp3-cpp/src *.hpp *.cpp
 recursive-include tests *.py *.wav *.mp3
 

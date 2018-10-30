@@ -9,9 +9,9 @@
 #define SRC_ID3OBJECT_HPP_
 
 #include "PyHeader.hpp"
-#include "../pcm2mp3-cpp/src/id3/ID3Header.hpp"
+#include "../pcm2mp3-cpp/src/transcode/ID3Header.hpp"
 
-using id3_t = std::shared_ptr<id3::ID3Header>;
+using id3_t = std::shared_ptr<pylame::id3::ID3Header>;
 
 typedef struct {
 	PyObject_HEAD;
@@ -26,7 +26,7 @@ PyObject *ID3_new(PyTypeObject *type,PyObject *args,PyObject *keywords);
 
  int ID3_getBuffer(PyID3 *self, Py_buffer *view, int flags);
 
-
+ bool check_ID3(PyObject *o);
 
  class ID3Manager {
   public:

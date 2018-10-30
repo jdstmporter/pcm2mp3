@@ -64,7 +64,7 @@ src=[]
 src.extend(sourceFilesIn('src'))
 src.extend(sourceFilesIn('pcm2mp3-cpp/src/info',['CRC16.cpp','info.cpp']))
 src.extend(sourceFilesIn('pcm2mp3-cpp/src/transcode',['transcode.cpp']))
-src.extend(sourceFilesIn('pcm2mp3-cpp/src/id3',['main.cpp']))
+# src.extend(sourceFilesIn('pcm2mp3-cpp/src/id3',['main.cpp']))
 
 coder = makeExtension('pcm2mp3',src)
 

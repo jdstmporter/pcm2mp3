@@ -9,6 +9,7 @@
 #include "../pcm2mp3-cpp/src/transcode/WAVFile.hpp"
 #include "../pcm2mp3-cpp/src/transcode/AIFFFile.hpp"
 #include "../pcm2mp3-cpp/src/transcode/transcoder.hpp"
+#include "ID3Object.hpp"
 
 using namespace pylame::pcm;
 
@@ -123,14 +124,19 @@ PyObject *PCM_transcode(PyPCM *self, PyObject *args, PyObject *keywords) {
 		PyErr_SetString(PyExc_OSError, "No data in PCM object");
 		return nullptr;
 	}
-	unsigned bitRate = 64;
-	unsigned quality = 5;
-	if(!PyArg_ParseTuple(args,"|II",&bitRate,&quality)) {
-		PyErr_SetString(PyExc_TypeError,"Bad arguments");
+	if(!PyTuple_Check(args))  {
+		PyErr_SetString(PyExc_OSError,"Arguments are not a tuple");
 		return nullptr;
 	}
+	auto n=PyTuple_Size(args);
+	if(n>1) {
+		PyErr_SetString(PyExc_OSError,"Too many positional arguments (wants none or one)");
+		return nullptr;
+	}
+	PyID3 *id=(n==1) ? (PyID3 *)PyTuple_GetItem(args,1) : nullptr;
 	try {
-		pylame::Transcode transcode(self->pcm, quality,bitRate);
+		id3_t id3=(id!=nullptr) ? id->id3 : std::make_shared<pylame::id3::ID3Header>();
+		pylame::Transcode transcode(self->pcm, *id3);
 		auto out = Py_BuildValue("y#", transcode.ptr(), transcode.size());
 		return out;
 	} catch (std::exception &e) {

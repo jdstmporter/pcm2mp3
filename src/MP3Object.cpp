@@ -86,18 +86,6 @@ int MP3_init(PyMP3 *self,PyObject *args,PyObject *keywords) {
 	try { bitRate=toLong(kwargs.at("rate")); } catch(...) {}
 	MP3Parameters parameters(quality,bitRate);
 
-	//std::cerr << "    Setting up ID3 mode" << std::endl;
-	try { parameters.useID3Version(static_cast<ID3Versions>(toLong(kwargs.at("id3")))); } catch(...) {}
-
-	//std::cerr << "    Setting up ID3 parameter" << std::endl;
-	try { parameters[ID3Tag::Title]=toString(kwargs.at("title")); } catch(...) {}
-	try { parameters[ID3Tag::Artist]=toString(kwargs.at("artist")); } catch(...) {}
-	try { parameters[ID3Tag::Album]=toString(kwargs.at("album")); } catch(...) {}
-	try { parameters[ID3Tag::Year]=toString(kwargs.at("year")); } catch(...) {}
-	try { parameters[ID3Tag::Comment]=toString(kwargs.at("comment")); } catch(...) {}
-	try { parameters[ID3Tag::Track]=toString(kwargs.at("track")); } catch(...) {}
-	try { parameters[ID3Tag::Genre]=toString(kwargs.at("genre")); } catch(...) {}
-
 	//std::cerr << "    Setting up additional parameters" << std::endl;
 	try { parameters.isCopyright(toBool(kwargs.at("copyright"))); } catch(...) {}
 	try { parameters.isOriginal(toBool(kwargs.at("original"))); } catch(...) {}

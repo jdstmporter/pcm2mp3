@@ -15,6 +15,7 @@
 #include "PCMObject.hpp"
 #include "MP3Object.hpp"
 #include "MP3TestObject.hpp"
+#include "ID3Object.hpp"
 
 
 static PyObject *mp3Error;
@@ -128,14 +129,17 @@ PyMODINIT_FUNC PyInit_pcm2mp3(void) {
 	    	    mp3.inc();
 	    	    mp3.add(m,"MP3");
 
-	    for(auto it=MP3Manager::ID3Modes.begin();it!=MP3Manager::ID3Modes.end();it++) {
-	    	PyModule_AddIntConstant(m,it->first.c_str(),static_cast<unsigned>(it->second));
-	    }
 
 	    MP3TestManager tst;
 	    if (!tst.isReady()) throw std::runtime_error("Cannot attach MP3 Check to module");
 	    tst.inc();
 	    tst.add(m,"MP3Check");
+
+	    ID3Manager id3;
+	    id3.prepare();
+	    if (!id3.isReady()) throw std::runtime_error("Cannot attach ID3 tag to module");
+	    id3.inc();
+	    id3.add(m,"ID3");
 
 		return m;
 	}

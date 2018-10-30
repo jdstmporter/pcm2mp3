@@ -17,10 +17,12 @@ if not checker.run():
     print("Cannot build pcm2mp3 unless compiler supports -std=c++14")
     exit(1)
 
-checker=utils.CheckLibrary('mp3lame')
-if not checker.run():
-    print("Cannot build pcm2mp3 unless libmp3lame is installed and on the compiler path")
-    exit(1)
+for lib in ['mp3lame','tag']:
+    checker=utils.CheckLibrary(lib)
+    if not checker.run():
+        print(f'Cannot build pcm2mp3 unless lib{lib} is installed and on the compiler path')
+        exit(1)
+
 
 configuration=read_configuration('setup.cfg')
 metadata=configuration['metadata']
@@ -55,13 +57,14 @@ def makeExtension(module,src):
                     sources = src,
                     language = 'c++',
                     include_dirs=['/usr/include'],
-                    libraries = ['mp3lame'],
+                    libraries = ['mp3lame','tag'],
                     library_dirs = ['/usr/lib/x86_64-linux-gnu'])
 
 src=[]
 src.extend(sourceFilesIn('src'))
 src.extend(sourceFilesIn('pcm2mp3-cpp/src/info',['CRC16.cpp','info.cpp']))
 src.extend(sourceFilesIn('pcm2mp3-cpp/src/transcode',['transcode.cpp']))
+src.extend(sourceFilesIn('pcm2mp3-cpp/src/id3',['main.cpp']))
 
 coder = makeExtension('pcm2mp3',src)
 

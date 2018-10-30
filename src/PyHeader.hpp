@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <iostream>
+#include <memory>
 
 #define DEBUG
 
@@ -38,7 +39,7 @@ public:
 long toLong(PyObject *obj);
 PyObject *fromULong(const unsigned long);
 PyObject *fromUInt(const unsigned);
-double toLDouble(PyObject *obj);
+double toDouble(PyObject *obj);
 std::string toString(PyObject *obj);
 PyObject *fromString(const std::string &s);
 bool toBool(PyObject *obj);

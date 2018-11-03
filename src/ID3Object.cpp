@@ -65,6 +65,69 @@ int ID3_init(PyID3 *self,PyObject *args,PyObject *keywords) {
 
 }
 
+PyObject * ID3_getQuality(PyID3 *self,void *closure) {
+        if(!self->id3) {
+		PyErr_SetString(PyExc_OSError,"No data in ID3 object");
+                return nullptr;
+        }
+	try {
+		return fromUInt(self->id3->Quality());
+	}
+ 	catch(std::exception &e) {
+                PyErr_SetString(PyExc_OSError,e.what());
+                return nullptr;
+        }
+ 	return (PyObject *)self;
+}
+
+int ID3_setQuality(PyID3 *self,PyObject *value,void *closure) {
+        if(!self->id3) {
+		PyErr_SetString(PyExc_OSError,"No data in ID3 object");
+                return -1;
+        }
+	try {
+		self->id3->setQuality((unsigned)toLong(value));
+	}
+ 	catch(std::exception &e) {
+                PyErr_SetString(PyExc_OSError,e.what());
+                return -1;
+        }
+ 	return 0;
+}
+
+PyObject * ID3_getRate(PyID3 *self,void *closure) {
+        if(!self->id3) {
+		PyErr_SetString(PyExc_OSError,"No data in ID3 object");
+                return nullptr;
+        }
+	try {
+		return fromUInt(self->id3->Rate());
+	}
+ 	catch(std::exception &e) {
+                PyErr_SetString(PyExc_OSError,e.what());
+                return nullptr;
+        }
+ 	return (PyObject *)self;
+}
+
+int ID3_setRate(PyID3 *self,PyObject *value,void *closure) {
+        if(!self->id3) {
+		PyErr_SetString(PyExc_OSError,"No data in ID3 object");
+                return -1;
+        }
+	try {
+		self->id3->setRate((unsigned)toLong(value));
+	}
+ 	catch(std::exception &e) {
+                PyErr_SetString(PyExc_OSError,e.what());
+                return -1;
+        }
+ 	return 0;
+}
+
+
+
+
 int ID3_set(PyID3 *self,PyObject *key,PyObject *value) {
 	if(!self->id3) {
 		PyErr_SetString(PyExc_OSError,"No data in ID3 object");
@@ -73,8 +136,7 @@ int ID3_set(PyID3 *self,PyObject *key,PyObject *value) {
 	try {
 		auto k=toLong(key);
 		id3::ID3Field field=static_cast<id3::ID3Field>((unsigned)k);
-		if(PyFloat_Check(value)) self->id3->set(field,toDouble(value));
-		else if(PyUnicode_Check(value)) self->id3->set(field,toString(value));
+		if(PyUnicode_Check(value)) self->id3->set(field,toString(value));
 		return 0;
 	}
 	catch(std::exception &e) {
@@ -128,6 +190,12 @@ int ID3_getBuffer(PyID3 *self, Py_buffer *view, int flags) {
 
 PyMethodDef PyID3_methods[] = {
 		{"data",(PyCFunction)ID3_data,METH_NOARGS,"Get the ID3 tag block"},
+		{NULL}
+};
+
+PyGetSetDef PyID3_properties[] = {
+		{'quality',ID3_getQuality,ID3_setQuality,"MP3 conversion quality 1 - 7 (defaults to 5)"},
+		{'rate',ID3_getRate,ID3_setRate,"MP3 file bitrate in kbps (defaults to 8)"},
 		{NULL}
 };
 
@@ -185,7 +253,7 @@ static PyTypeObject PyID3_Type = {
 
 		PyID3_methods,             		/* tp_methods */
 		PyID3_members,             		/* tp_members */
-		0,                         			/* tp_getset */
+		PyID3_properties,                         			/* tp_getset */
 		0,                         			/* tp_base */
 		0,                         			/* tp_dict */
 		0,                         			/* tp_descr_get */

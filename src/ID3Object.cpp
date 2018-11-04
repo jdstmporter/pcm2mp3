@@ -194,8 +194,8 @@ PyMethodDef PyID3_methods[] = {
 };
 
 PyGetSetDef PyID3_properties[] = {
-		{'quality',ID3_getQuality,ID3_setQuality,"MP3 conversion quality 1 - 7 (defaults to 5)"},
-		{'rate',ID3_getRate,ID3_setRate,"MP3 file bitrate in kbps (defaults to 8)"},
+		{"quality",(getter)ID3_getQuality,(setter)ID3_setQuality,"conversion quality (default to 5)"},
+		{"rate",(getter)ID3_getRate,(setter)ID3_setRate,"MP3 bitrate in kpbs (defauklts to 16)"},
 		{NULL}
 };
 

@@ -10,7 +10,7 @@
 #include "ID3Object.hpp"
 
 
-using namespace pylame::mp3;
+using namespace pylame;
 
 #ifdef DEBUG
 #define debug(ARGS) std::cerr << ARGS << std::endl

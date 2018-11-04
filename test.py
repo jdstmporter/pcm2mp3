@@ -23,8 +23,9 @@ if __name__ == '__main__':
         
     try:
         id3=pcm2mp3.ID3(pcm2mp3.ID3.ID3v2)
-        id3[pcm2mp3.ID3.COPYRIGHT]='All hail Lore Lixenberg!'
-        id3[pcm2mp3.ID3.TITLE]='The test of tests'
+        id3[pcm2mp3.ID3.copyright]='All hail Lore Lixenberg!'
+        id3[pcm2mp3.ID3.title]='The test of tests'
+        id3.rate=32
         if TRANSCODE:
             print('Using transcode')
             with open('test.wav','rb') as infile:
